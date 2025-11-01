@@ -1,84 +1,78 @@
 import React, { useState } from "react";
 
-/**
- * JobForm component
- * Used for adding and editing job entries.
- * Receives initial data (when editing) and `onSave` / `onCancel` callbacks.
- */
 export default function JobForm({ initial = {}, onSave, onCancel }) {
   const [form, setForm] = useState({
-    company: initial.company || "",
-    title: initial.title || "",
-    location: initial.location || "",
-    status: initial.status || "applied",
-    nextStep: initial.nextStep || "",
-    tags: initial.tags ? initial.tags.join(", ") : ""
+    company:  initial.company  ?? "",
+    title:    initial.title    ?? "",
+    location: initial.location ?? "",
+    status:   initial.status   ?? "applied",
+    nextStep: initial.nextStep ?? "",
+    tags:     Array.isArray(initial.tags) ? initial.tags.join(", ") : (initial.tags ?? ""),
   });
+  const [saving, setSaving] = useState(false);
 
-  const handleChange = (e) => {
+  const onChange = (e) => {
     const { name, value } = e.target;
     setForm((f) => ({ ...f, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
+  const onSubmit = async (e) => {
     e.preventDefault();
-    const payload = {
-      ...form,
-      tags: form.tags.split(",").map((t) => t.trim()).filter(Boolean)
-    };
-    onSave(payload);
+    setSaving(true);
+    try {
+      const payload = {
+        company:  form.company.trim(),
+        title:    form.title.trim(),
+        location: form.location.trim(),
+        status:   form.status,
+        nextStep: form.nextStep.trim(),
+        tags:     form.tags.split(",").map(t => t.trim()).filter(Boolean),
+      };
+      await onSave(payload); // parent handles switching back to list + refresh
+    } finally {
+      setSaving(false);
+    }
   };
 
   return (
-    <form className="card space-y-4" onSubmit={handleSubmit}>
-      <input
-        name="company"
-        placeholder="Company"
-        value={form.company}
-        onChange={handleChange}
-        required
-      />
-      <input
-        name="title"
-        placeholder="Role / Position"
-        value={form.title}
-        onChange={handleChange}
-        required
-      />
-      <input
-        name="location"
-        placeholder="Location (optional)"
-        value={form.location}
-        onChange={handleChange}
-      />
-      <select name="status" value={form.status} onChange={handleChange}>
-        <option value="applied">Applied</option>
-        <option value="interviewing">Interviewing</option>
-        <option value="rejected">Rejected</option>
-        <option value="offer">Offer</option>
-      </select>
-      <input
-        name="nextStep"
-        placeholder="Next step (e.g. Follow up Tuesday)"
-        value={form.nextStep}
-        onChange={handleChange}
-      />
-      <input
-        name="tags"
-        placeholder="Tags (comma separated)"
-        value={form.tags}
-        onChange={handleChange}
-      />
+    <form onSubmit={onSubmit} className="space-y-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div className="space-y-1">
+          <label className="text-sm font-medium capitalize">Company</label>
+          <input className="input" name="company" value={form.company} onChange={onChange} required />
+        </div>
+        <div className="space-y-1">
+          <label className="text-sm font-medium capitalize">Title</label>
+          <input className="input" name="title" value={form.title} onChange={onChange} required />
+        </div>
+        <div className="space-y-1">
+          <label className="text-sm font-medium capitalize">Location</label>
+          <input className="input" name="location" value={form.location} onChange={onChange} />
+        </div>
+        <div className="space-y-1">
+          <label className="text-sm font-medium capitalize">Status</label>
+          <select className="select" name="status" value={form.status} onChange={onChange}>
+            <option value="applied">Applied</option>
+            <option value="interviewing">Interviewing</option>
+            <option value="rejected">Rejected</option>
+            <option value="offer">Offer</option>
+          </select>
+        </div>
+      </div>
 
-      <div className="flex gap-2">
-        <button type="submit">Save</button>
-        <button
-          type="button"
-          className="ghost"
-          onClick={onCancel}
-        >
-          Cancel
-        </button>
+      <div className="space-y-1">
+        <label className="text-sm font-medium capitalize">Next Step</label>
+        <input className="input" name="nextStep" value={form.nextStep} onChange={onChange} />
+      </div>
+
+      <div className="space-y-1">
+        <label className="text-sm font-medium capitalize">Tags</label>
+        <input className="input" name="tags" value={form.tags} onChange={onChange} placeholder="Backend, Node, Visa" />
+      </div>
+
+      <div className="flex items-center gap-3 pt-2">
+        <button type="submit" className="btn" disabled={saving}>{saving ? "Saving…" : "Save"}</button>
+        <button type="button" className="btn-ghost" onClick={onCancel}>Cancel</button>
       </div>
     </form>
   );

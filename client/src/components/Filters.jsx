@@ -1,33 +1,37 @@
 import React from "react";
 
 /**
- * Filters component
- * Provides a search box and a dropdown to filter jobs by status.
- * The parent (App.jsx) passes `value` and `onChange` props.
+ * Filters: search + status dropdown.
+ * Everything is visually spaced and capitalized via utility classes.
  */
 export default function Filters({ value, onChange }) {
   return (
-    <div className="card mb-6">
-      {/* Search bar */}
-      <input
-        type="text"
-        placeholder="Search company, title, or tag..."
-        className="mb-3"
-        value={value.q}
-        onChange={(e) => onChange({ ...value, q: e.target.value })}
-      />
+    <div className="grid grid-cols-1 sm:grid-cols-[2fr_1fr] gap-4">
+      <div className="space-y-1">
+        <label className="text-sm font-medium capitalize">Search</label>
+        <input
+          className="input"
+          type="text"
+          placeholder="Search Company, Title, Or Tag"
+          value={value.q}
+          onChange={(e) => onChange({ ...value, q: e.target.value })}
+        />
+      </div>
 
-      {/* Status dropdown */}
-      <select
-        value={value.status}
-        onChange={(e) => onChange({ ...value, status: e.target.value })}
-      >
-        <option value="all">All statuses</option>
-        <option value="applied">Applied</option>
-        <option value="interviewing">Interviewing</option>
-        <option value="rejected">Rejected</option>
-        <option value="offer">Offer</option>
-      </select>
+      <div className="space-y-1">
+        <label className="text-sm font-medium capitalize">Status</label>
+        <select
+          className="select"
+          value={value.status}
+          onChange={(e) => onChange({ ...value, status: e.target.value })}
+        >
+          <option value="all">All Statuses</option>
+          <option value="applied">Applied</option>
+          <option value="interviewing">Interviewing</option>
+          <option value="rejected">Rejected</option>
+          <option value="offer">Offer</option>
+        </select>
+      </div>
     </div>
   );
 }
