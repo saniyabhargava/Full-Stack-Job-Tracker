@@ -72,8 +72,10 @@ The frontend consumes these endpoints dynamically to display and manage user dat
 ### Add Job Form
 ![Add Job Screenshot](screenshots/add-job.png)
 
-### Filter and Search
-![Filter Screenshot](screenshots/filter.png)
+### Filters 
+![Filter Screenshot](screenshots/Filter1.png)
+
+![Filter Screenshot](screenshots/Filter2.png)
 
 ---
 
