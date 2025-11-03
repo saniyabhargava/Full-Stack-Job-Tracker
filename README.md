@@ -1,3 +1,4 @@
+Full-stack web app to manage and track job applications. Built with React, Node.js, and MongoDB, featuring CRUD, filters, and a live deployment on Netlify + Render.
 # Full-Stack Job Tracker  
 **Turn Chaos into Clarity**
 
